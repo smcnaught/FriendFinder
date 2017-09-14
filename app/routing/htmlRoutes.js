@@ -1,8 +1,8 @@
+// Dependencies
 // Include the path package to get the correct file path for our html. 
 var path = require("path");
 
 // Routing: 
-
 module.exports = function(app){
     // HTML Get Requests
 
@@ -12,7 +12,12 @@ module.exports = function(app){
     });
 
     // Get request for the default/catch-all route that leads back to the home page.
+    app.get("/", function(req, res){
+        res.sendFile(path.join(__dirname, "../public/home.html"));
+    });
+
+    // Get request for the default/catch-all route that leads back to the home page.
     app.get("/home", function(req, res){
-        res.sendFile(path.sendFile(__dirname, "../public/home.html"));
-    })
+        res.sendFile(path.join(__dirname, "../public/home.html"));
+    });
 };

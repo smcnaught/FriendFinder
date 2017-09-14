@@ -1,7 +1,8 @@
 <!DOCTYPE = html>
-<html>
+<html lang="en">
 
 <head>
+    <title>Survey Page</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
         crossorigin="anonymous">
 
@@ -20,12 +21,12 @@
         <h4>Name (Required)</h4>
         <input type="text" name="" id="name" class="form-control" required>
         <h4>Link to Photo Image (Required)</h4>
-        <input type="text" name="" id="name" class="form-control" required>
+        <input type="text" name="" id="photo" class="form-control" required>
         <hr>
         <h3><strong>Question 1</strong></h3>
         <h4>Your mind is always buzzing with unexplored ideas and plans.</h4>
         <select data-placeholder="" class="chosen-select" id="q1">
-                <option value=""></option>
+               <option value=""></option>
                <option value="1">1 (Strongly Disagree)</option>
                <option value="2">2</option>
                <option value="3">3</option>
@@ -36,13 +37,13 @@
         <h3><strong>Question 2</strong></h3>
         <h4>Generally speaking, you rely more on your experience than your imagination.</h4>
         <select data-placeholder="" class="chosen-select" id="q2">
-                     <option value=""></option>
-                    <option value="1">1 (Strongly Disagree)</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5 (Strongly Agree)</option>
-                  </select>
+            <option value=""></option>
+            <option value="1">1 (Strongly Disagree)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Strongly Agree)</option>
+            </select>
 
         <h3><strong>Question 3</strong></h3>
         <h4>You find it easy to stay relaxed and focused even when there is some pressure.</h4>
@@ -134,19 +135,123 @@
             <option value="5">5 (Strongly Agree)</option>
         </select><br><br>
 
-        <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit"><i class="fa fa-check-circle" aria-hidden="true"></i>
-            Submit</button>
-
+        <button class="btn btn-primary btn-lg btn-block" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Submit</button>
         <hr>
 
-
         <a href="./data/friends.js">API Friends List</a> |
-        <a href="http://">GitHub Repo</a>
-
-        <br>
-        <br>
+        <a href="http://">GitHub Repo</a><br><br>
     </div>
 
+    <!-- Modal -->
+    <!-- Trigger the modal with a button-->
+    <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button> -->
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content" id="myModal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <h2 id="matchName">Placeholder</h2>
+                    <img id="matchImg" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg" alt="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </body>
 
 </html>
+
+<script>
+    // Determine the user's most compatible friend using the following as a guide:
+
+    // Convert each user's results into a simple array of numbers 
+    // (ex: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]).
+    // With that done, compare the difference between current user's scores against 
+    // those from other users, question by question. Add up the differences to calculate the 
+    // totalDifference.
+
+    // Function to determine if the user has filled in all the forms when they click submit.
+    function formValidation() {
+        var isValid = true;
+        $('.form-control').each(function () {
+            if ($(this).val() === '') {
+                isValid = false;
+            };
+        });
+
+        $('.chosen-select').each(function () {
+            if ($(this).val() === "") {
+                isValid = false;
+            };
+        });
+        return isValid;
+    };
+
+    // Capture the user's data when they click Submit.
+    $("#submit").click(function () {
+        event.preventDefault();
+        formValidation();
+
+        // If all fields have been filled out, submit the form.
+        if (formValidation() == true) {
+            // Create an object for the user's data
+            var custData = {
+                name: $("#name").val(),
+                photo: $("#photo").val(),
+                scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val(),]
+            };
+
+            console.log(custData);
+
+            // Grab the URL of the website
+            var currentURL = window.location.origin;
+
+            // Create an AJAX to post the data to the friends API.
+            $.post(currentURL + "../data/friends.js", custData, function (data) {
+                // Get the results from the AJAX post so that the best match's name and photo
+                // can be displayed.
+                $("#matchName").text(data.name);
+                $("#matchImg").attr("src", data.photo);
+
+                // Show the modal with the best match
+                $("#myModal").modal('toggle');
+            });
+
+        } else if (formValidation() == false) {
+            alert("Please fill out all fields before submitting!");
+        }
+        return false;
+    });
+
+
+// Example: 
+
+// User 1: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]
+
+// User 2: [3, 2, 6, 4, 5, 1, 2, 5, 4, 1]
+
+// Total Difference: 2 + 1 + 2 = 5
+
+
+// Remember to use the absolute value of the differences. Put another way: 
+// no negative solutions! Your app should calculate both 5-3 and 3-5 as 2, and so on. 
+// The closest match will be the user with the least amount of difference.
+
+
+
+// Once you've found the current user's most compatible friend, display the result as 
+// a modal pop-up.
+
+
+// The modal should display both the name and picture of the closest match.
+
+</script>
