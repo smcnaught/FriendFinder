@@ -2,6 +2,8 @@
 // Include the path package to get the correct file path for our html. 
 var path = require("path");
 
+// var friends = require("../data/friends.js");
+
 // Routing: 
 module.exports = function(app){
     // HTML Get Requests

@@ -1,7 +1,7 @@
 // Load Data - we're linking our routes to a series of "data" sources.
 // These data sources hold arrays of information in the friends array.
 
-var friends = require("../data/friends");
+var friends = require("../data/friends.js");
 
 module.exports = function (app) {
     // API Get Requests
@@ -22,7 +22,6 @@ module.exports = function (app) {
     app.post("/api/friends", function (req, res) {
         // Our "server" will respond to requests and provide users with all the "friends"
         friends.push(req.body);
-        res.json(true);
     });
 
 }
