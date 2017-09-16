@@ -231,11 +231,15 @@
                 // User 1: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]
                 // User 2: [3, 2, 6, 4, 5, 1, 2, 5, 4, 1]
                 // Total Difference: 2 + 1 + 2 = 5
-                var totalDifference = function (a, b) { return Math.abs(a - b); };
 
-                for(var j=0; j < FRIENDSLENGTH; j++){
-                    totalDifference(CURRENTFRIEND.SCORESARR[j], FRIENDS[j].SCORESARR[j]);
-                }
+                //=====================================================================================
+                // var totalDifference = function (a, b) { return Math.abs(a - b); };
+
+                // for (var j = 0; j < FRIENDSLENGTH; j++) {
+                //     totalDifference(CURRENTFRIEND.SCORESARR[j], FRIENDS[j].SCORESARR[j]);
+                // }
+                //=====================================================================================
+
 
                 // Once you've found the current user's most compatible friend, display the result as 
                 // a modal pop-up.The modal should display both the name and picture of the closest match.
