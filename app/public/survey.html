@@ -176,14 +176,7 @@
         // Variable to hold array of the customer's scores.
         var scoresArr = [];
 
-        // Determine the user's most compatible friend using the following as a guide:
-
-        // Convert each user's results into a simple array of numbers 
-        // (ex: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]).
-        // With that done, compare the difference between current user's scores against 
-        // those from other users, question by question. Add up the differences to calculate the 
-        // totalDifference.
-
+        // Determine the user's most compatible friend.
         // Function to determine if the user has filled in all the forms when they click submit.
         function formValidation() {
             var isValid = true;
@@ -224,25 +217,18 @@
                         return scoresArr;
                     }
                 };
+                
+                function checkScore(response, custData){
+                    var totalDifference = function (a, b) { return Math.abs(a - b); };
+                    var total = 0;
 
-                // With that done, compare the difference between current user's scores against those from other users, 
-                // question by question. Add up the differences to calculate the totalDifference.
-                // Example: 
-                // User 1: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]
-                // User 2: [3, 2, 6, 4, 5, 1, 2, 5, 4, 1]
-                // Total Difference: 2 + 1 + 2 = 5
+                    for(var i = 0; i < response.length; i++){
+                        
+                        total += totalDifference(response[i], custData[i]);
+                    }
+                    return total;                   
 
-                //=====================================================================================
-                // var totalDifference = function (a, b) { return Math.abs(a - b); };
-
-                // for (var j = 0; j < FRIENDSLENGTH; j++) {
-                //     totalDifference(CURRENTFRIEND.SCORESARR[j], FRIENDS[j].SCORESARR[j]);
-                // }
-                //=====================================================================================
-
-
-                // Once you've found the current user's most compatible friend, display the result as 
-                // a modal pop-up.The modal should display both the name and picture of the closest match.
+                }
 
                 // Grab the URL of the website
                 var currentURL = window.location.origin;
@@ -251,10 +237,36 @@
                 $.post(currentURL + "/api/friends", custData, function (data) {
                     // Get the results from the AJAX post so that the best match's name and photo
                     // can be displayed.
-                    $("#matchName").text(data.name);
-                    $("#matchImg").attr("src", data.photo);
                 });
 
+                $.get("/api/friends", function (response) {
+                    console.log(response);
+                    // totalDifference();
+
+                    var bestMatch = {
+                        currentUser: '',
+                        match: {},
+                        score: 0
+                    }
+            
+                    for (var i = 0; i < response.length; i++) {
+                        // totalDifference(CURRENTFRIEND.SCORESARR[j], FRIENDS[j].SCORESARR[j]);
+                        var result;
+                        if(response[i].name != custData.name){
+                            // then run a function that checks their score.
+                            result = checkScore(response[i].scores, custData.scores);
+                            if (result > bestMatch.score){
+                                bestMatch.currentUser = custData.name;
+                                bestMatch.match = response[i];
+                                bestMatch.score = result;
+                            }
+                        }
+                    }
+                    console.log(bestMatch.match.name);
+                    console.log(bestMatch.match.photo);
+                    $("#matchName").text(bestMatch.match.name);
+                    $("#matchImg").attr("src", bestMatch.match.photo);
+                })
                 // Show the modal.
                 $("#myModal").modal("show");
 
@@ -267,5 +279,4 @@
         });
 
     })
-
 </script>
