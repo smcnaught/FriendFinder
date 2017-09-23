@@ -44,7 +44,7 @@
             <option value="4">4</option>
             <option value="5">5 (Strongly Agree)</option>
             </select>
-        <!-- 
+         
         <h3><strong>Question 3</strong></h3>
         <h4>You find it easy to stay relaxed and focused even when there is some pressure.</h4>
         <select data-placeholder="" class="chosen-select" id="q3">
@@ -133,7 +133,7 @@
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5 (Strongly Agree)</option>
-        </select><br><br> -->
+        </select><br><br>
 
         <!-- <div class="container"> -->
         <!-- Trigger the modal with a button -->
@@ -154,7 +154,7 @@
                     </div>
                     <div class="modal-body">
                         <h3 id="matchName">text here</h3>
-                        <img src="" alt="" id="matchImg">
+                        <img src="" alt="" id="matchImg" style="max-width: 300">
                     </div>
                 </div>
 
@@ -202,7 +202,7 @@
             // If all fields have been filled out, submit the form.
             if (formValidation() == true) {
 
-
+                
                 // Create an object for the user's data
                 var custData = {
                     name: $("#name").val().trim(),
@@ -217,11 +217,13 @@
                         return scoresArr;
                     }
                 };
+                var newcustData = JSON.stringify(custData);
+                // console.log('I am newcustData' + newcustData);
                 
                 function checkScore(response, custData){
                     var totalDifference = function (a, b) { return Math.abs(a - b); };
                     var total = 0;
-
+                    
                     for(var i = 0; i < response.length; i++){
                         
                         total += totalDifference(response[i], custData[i]);
@@ -237,20 +239,23 @@
                 $.post(currentURL + "/api/friends", custData, function (data) {
                     // Get the results from the AJAX post so that the best match's name and photo
                     // can be displayed.
+                    // console.log(data);
                 });
-
+                
                 $.get("/api/friends", function (response) {
-                    console.log(response);
-                    // totalDifference();
-
+                    
                     var bestMatch = {
                         currentUser: '',
                         match: {},
                         score: 0
-                    }
-            
+                    }                   
+                    
                     for (var i = 0; i < response.length; i++) {
-                        // totalDifference(CURRENTFRIEND.SCORESARR[j], FRIENDS[j].SCORESARR[j]);
+                        console.log(response[i]);
+                        console.log(response[i].name);
+                        // var newResponse = JSON.stringify(response);
+                        // console.log('i am New response: ' + newResponse);
+                        // console.log('i am new response at position 1' + newResponse[1]);
                         var result;
                         if(response[i].name != custData.name){
                             // then run a function that checks their score.
@@ -262,8 +267,11 @@
                             }
                         }
                     }
+                   
+                    console.log(bestMatch);
+                    console.log(bestMatch.match);
                     console.log(bestMatch.match.name);
-                    console.log(bestMatch.match.photo);
+                    // console.log(bestMatch.match.photo);
                     $("#matchName").text(bestMatch.match.name);
                     $("#matchImg").attr("src", bestMatch.match.photo);
                 })
